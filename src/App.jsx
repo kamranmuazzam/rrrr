@@ -11,7 +11,7 @@ function App() {
   const [resultStatus, setResultStatus] = createSignal("---");
   const [resultColor, setResultColor] = createSignal("");
   const [messegeColor, setMessegeColor] = createSignal("");
-  const [profNumber, setProf] = createSignal(1.4);
+  const [profNumber, setProf] = createSignal(124);
   const [loadDash, setLoadDash] = createSignal("");
 
   async function fetchResult() {
@@ -94,9 +94,9 @@ function App() {
           // 365, 2nd profNumber nov 2022
           // 1.4, 1st profNumber may 2021 */}
         <button
-          style={{ background: profNumber() === 1.4 ? "green" : "" }}
+          style={{ background: profNumber() === 124 ? "green" : "" }}
           onClick={() => {
-            setProf(1.4);
+            setProf(124);
           }}
         >
           1st Prof
@@ -115,9 +115,9 @@ function App() {
         </button>
         <button
           style={{
-            background: profNumber() === 4 ? "green" : "",
+            background: profNumber() === 1340 ? "green" : "",
           }}
-          onClick={() => setProf(4)}
+          onClick={() => setProf(1340)}
         >
           4th Prof
         </button>

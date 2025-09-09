@@ -13,7 +13,7 @@ export default function ProfButtons({ profNumber, setProf }) {
         justifyContent: "center",
       }}
     >
-      <button style={buttonStyle(1.4)} onClick={() => setProf(1.4)}>
+      <button style={buttonStyle(124)} onClick={() => setProf(1.4)}>
         1st Prof
       </button>
       <button style={buttonStyle(365)} onClick={() => setProf(365)}>
@@ -22,7 +22,7 @@ export default function ProfButtons({ profNumber, setProf }) {
       <button style={buttonStyle(726)} onClick={() => setProf(726)}>
         3rd Prof
       </button>
-      <button style={buttonStyle(4)} onClick={() => setProf(1.40)}>
+      <button style={buttonStyle(1340)} onClick={() => setProf(1.40)}>
         4th Prof
       </button>
     </div>
