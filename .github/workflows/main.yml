@@ -74,6 +74,14 @@ jobs:
           releaseDraft: true
           prerelease: false
 
+      # --- AD-HOC SIGNING STEP (macOS only) ---
+      - name: Ad-hoc codesign (macOS only)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          APP_PATH=$(find src-tauri/target/release/bundle/macos -name "*.app" | head -n 1)
+          echo "Signing $APP_PATH"
+          codesign --sign - --force --deep "$APP_PATH"
+
   # update_json:
   #   needs: release
   #   runs-on: ubuntu-latest
