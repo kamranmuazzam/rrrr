@@ -57,14 +57,16 @@ jobs:
         run: yarn install --check-files --force
 
       # Generate a new signing key on every run (ephemeral)
-      - name: Generate Tauri Private Key
-        run: yarn tauri signer generate -w ~/.tauri/myapp.key
+      # - name: Generate Tauri Private Key
+      #   run: yarn tauri signer generate -w ~/.tauri/myapp.key
 
       # Build and release with Tauri
       - name: Build the app
         uses: tauri-apps/tauri-action@v0.5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "App Name v${{ github.ref_name }}"
