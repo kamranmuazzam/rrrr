@@ -81,6 +81,8 @@ jobs:
           APP_PATH=$(find src-tauri/target/release/bundle/macos -name "*.app" | head -n 1)
           echo "Signing $APP_PATH"
           codesign --sign - --force --deep "$APP_PATH"
+          echo "Clearing quarantine flags on $APP_PATH"
+          xattr -cr "$APP_PATH"
 
   # update_json:
   #   needs: release
