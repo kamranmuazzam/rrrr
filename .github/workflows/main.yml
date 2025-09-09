@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      # Checkout source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Tauri deps (Linux only)
+      - name: Install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-3-dev \
+            libwebkit2gtk-4.0-dev \
+            libappindicator3-dev \
+            librsvg2-dev
+
+      # Rust setup
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      # Rust caching
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      # Node.js + cache
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "yarn"
+
+      - name: Install frontend dependencies
+        run: yarn install --check-files --force
+
+      # Generate a new signing key on every run (ephemeral)
+      - name: Generate Tauri Private Key
+        run: yarn tauri signer generate -w ~/.tauri/myapp.key
+
+      # Build and release with Tauri
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "App Name v${{ github.ref_name }}"
+          releaseBody: "Latest App v${{ github.ref_name }}"
+          releaseDraft: true
+          prerelease: false
+
+  update_json:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "kamranmuazzam@gmail.com"
+          git config --global user.name "kamran_muazzam"
+
+      - name: Remove old latest.json
+        run: rm -f latest.json
+
+      # Dynamically fetch the latest.json from the tag that triggered
+      - name: Download latest.json
+        run: |
+          curl -LJO "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/latest.json"
+
+      - name: Commit changes
+        run: |
+          git add latest.json
+          git commit -m "Update latest.json" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push origin main
