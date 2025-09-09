@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest]
-        # platform: [macos-latest, ubuntu-latest, windows-latest]
+        # platform: [macos-latest, ubuntu-latest]
+        platform: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.platform }}
 
@@ -72,33 +72,33 @@ jobs:
           releaseDraft: true
           prerelease: false
 
-  update_json:
-    needs: release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+  # update_json:
+  #   needs: release
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "kamranmuazzam@gmail.com"
-          git config --global user.name "kamran_muazzam"
+  #     - name: Configure Git
+  #       run: |
+  #         git config --global user.email "kamranmuazzam@gmail.com"
+  #         git config --global user.name "kamran_muazzam"
 
-      - name: Remove old latest.json
-        run: rm -f latest.json
+  #     - name: Remove old latest.json
+  #       run: rm -f latest.json
 
-      # Dynamically fetch the latest.json from the tag that triggered
-      - name: Download latest.json
-        run: |
-          curl -LJO "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/latest.json"
+  #     # Dynamically fetch the latest.json from the tag that triggered
+  #     - name: Download latest.json
+  #       run: |
+  #         curl -LJO "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/latest.json"
 
-      - name: Commit changes
-        run: |
-          git add latest.json
-          git commit -m "Update latest.json" || echo "No changes to commit"
+  #     - name: Commit changes
+  #       run: |
+  #         git add latest.json
+  #         git commit -m "Update latest.json" || echo "No changes to commit"
 
-      - name: Push changes
-        run: git push origin main
+  #     - name: Push changes
+  #       run: git push origin main

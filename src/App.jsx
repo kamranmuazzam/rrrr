@@ -11,7 +11,7 @@ function App() {
   const [resultStatus, setResultStatus] = createSignal("---");
   const [resultColor, setResultColor] = createSignal("");
   const [messegeColor, setMessegeColor] = createSignal("");
-  const [profNumber, setProf] = createSignal(124);
+  const [profNumber, setProf] = createSignal(1340);
   const [loadDash, setLoadDash] = createSignal("");
 
   async function fetchResult() {
